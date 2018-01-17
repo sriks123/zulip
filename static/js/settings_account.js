@@ -104,6 +104,57 @@ exports.set_up = function () {
         }
     });
 
+    function show_reset_email_loader(){
+        $('.loading_indicator_spinner').html(templates.render("loader"));
+        $('.loading_indicator_spinner').show();
+        $('.loading_indicator_message').show();
+    }
+
+    function hide_reset_email_loader(){
+        $('.loading_indicator_spinner').html(null);
+        $('.loading_indicator_spinner').hide();
+        $('.loading_indicator_message').hide();
+    }
+
+    function send_reset_password(){
+        var email = people.my_current_email();
+        var form = new FormData();
+
+        form.append("email",email);
+
+        channel.post({
+            url:'/accounts/password/reset/',
+            data:form,
+            cache : false,
+            processData:false,
+            contentType:false,
+
+            success:function(){
+                hide_reset_email_loader();
+                $('$reset_sent').show();
+                $('#resend_link').show();
+            }
+            error:function(){
+                hide_reset_email_loader();
+                $('#reset_failed').show();
+                $('#resend_link').show();
+            }
+
+        });
+
+    }
+
+    $("#forgot_password").on('click',function(){
+        $('#forgot_password').hide();
+        $('#reset_password').show();
+    });
+
+    $('#reset_password').on('click',function(){
+        $('#reset_password').hide();
+        show_reset_email_loader();
+        send_reset_password();
+    });
+
     $('#new_password').on('change keyup', function () {
         var field = $('#new_password');
         common.password_quality(field.val(), $('#pw_strength .bar'), field);
