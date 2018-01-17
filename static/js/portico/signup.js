@@ -77,4 +77,5 @@ $(function () {
     $("#realm_in_root_domain").change(function () {
         show_subdomain_section($(this).is(":checked"));
     });
+
 });
